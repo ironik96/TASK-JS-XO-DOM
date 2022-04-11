@@ -36,10 +36,9 @@ function winningAlert(winner) {
  * That interacts with the UI
  */
 function clickButton(index) {
-  if (board[index - 1] === NO_ELEMENT) {
-    board[index - 1] = element;
-    fillButton(index, element);
-  }
+  if (board[index - 1] !== NO_ELEMENT) return;
+  board[index - 1] = element;
+  fillButton(index, element);
   element = toggleElement(element);
   checkWinner(X_ELEMENT);
   checkWinner(O_ELEMENT);
