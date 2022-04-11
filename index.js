@@ -1,16 +1,7 @@
 const X_ELEMENT = "X";
 const O_ELEMENT = "O";
 const NO_ELEMENT = "";
-const WIN_PATTERNS = new Set([
-  ["0", "1", "2"],
-  ["3", "4", "5"],
-  ["6", "7", "8"],
-  ["0", "3", "6"],
-  ["1", "4", "7"],
-  ["2", "5", "8"],
-  ["0", "4", "8"],
-  ["2", "4", "6"],
-]);
+const WIN_PATTERNS = ["012", "345", "678", "036", "147", "258", "048", "246"];
 
 // ❗️ DON'T TOUCH THESE 2 FUNCTIONs
 // Pre-made function that will fill the button with its number.
@@ -40,9 +31,9 @@ function clickButton(index) {
   board[index - 1] = element;
   fillButton(index, element);
   element = toggleElement(element);
-  checkWinner(X_ELEMENT);
-  checkWinner(O_ELEMENT);
-  if (!board.includes(NO_ELEMENT)) draw();
+  if (checkWinner(X_ELEMENT)) winner(X_ELEMENT);
+  else if (checkWinner(O_ELEMENT)) winner(O_ELEMENT);
+  else if (!board.includes(NO_ELEMENT)) draw();
 }
 
 /**
@@ -61,24 +52,25 @@ const toggleElement = (element) =>
 const getElementIndices = (element) =>
   board.map((e, i) => (e === element ? i : "")).join("");
 
-const winner = (element) => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const winner = async (element) => {
+  await delay(10);
   winningAlert(element);
   restartGame();
 };
 
-const draw = () => {
+const draw = async () => {
+  await delay(10);
   alert("Draw");
   restartGame();
 };
 
 function checkWinner(element) {
   const indices = getElementIndices(element);
-  WIN_PATTERNS.forEach((pattern) => {
-    if (pattern.every((pos) => indices.includes(pos))) {
-      winner(element);
-      return;
-    }
-  });
+  return WIN_PATTERNS.some((pattern) =>
+    pattern.split("").every((pos) => indices.includes(pos))
+  );
 }
 
 let board;
